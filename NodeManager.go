@@ -10,11 +10,14 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"time"
 )
 
 var (
 	client *rpc.Client
 )
+
+var pids []int
 
 type Config struct {
 	ChainID int `json:"chainId"`
@@ -42,7 +45,8 @@ func InitNet() {
 	args := []string{"init", "--datadir", "data0", "genesis.json"}
 	execCommand(command, args)
 
-	args = []string{"--datadir", "data0", "--networkid", "10"}
+	//geth --datadir data0 --nodiscover --networkid 10 --http --http.api personal,eth,net,web3,admin,miner,txpool
+	args = []string{"--datadir", "data0", "--nodiscover", "--networkid", "10", "--http", "--http.api", "personal,eth,net,web3,admin,miner,txpool"}
 	execCommand(command, args)
 }
 
@@ -145,7 +149,21 @@ func minerStop(client *rpc.Client) (stop bool, err error) {
 //挖矿账户选择
 
 func execCommand(commandName string, params []string) bool {
+
 	cmd := exec.Command(commandName, params...)
+	if pids != nil {
+		for pid := range pids {
+			pro, _ := os.FindProcess(pid)
+			err := pro.Kill()
+			if err != nil {
+				fmt.Println("kill failure")
+			}
+		}
+		pids = pids[0:0]
+	}
+	pid := cmd.Process.Pid
+	fmt.Println(pid)
+	pids = append(pids, pid)
 
 	//显示运行的命令
 	fmt.Println(cmd.Args)
@@ -170,7 +188,8 @@ func execCommand(commandName string, params []string) bool {
 		fmt.Println(line)
 	}
 
-	cmd.Wait()
+	//cmd.Wait()
+	time.Sleep(10 * time.Second)
 	return true
 }
 
@@ -234,7 +253,55 @@ func readFile() {
 	}
 }
 
+//修改账户余额
 func generateJson(accounts []string) {
+	balance := map[string]string{
+		"balance": "0x1000000000000000000",
+	}
+	config := map[string]interface{}{
+		"chainId": 10,
+	}
+	var alloc = make(map[string]interface{})
+	for _, v := range accounts {
+		alloc[v] = balance
+	}
+
+	info := map[string]interface{}{
+		"config":     config,
+		"nonce":      "0x0000000000000042",
+		"timestamp":  "0x0",
+		"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+		"extraData":  "",
+		"gasLimit":   "0xffffffff",
+		"difficulty": "0xfffff",
+		"mixhash":    "0x0000000000000000000000000000000000000000000000000000000000000000",
+		"coinbase":   "0x3333333333333333333333333333333333333333",
+		"alloc":      alloc,
+	}
+	bytes, e := json.Marshal(info)
+	if e != nil {
+		fmt.Printf("序列化失败")
+		return
+	} else {
+		jsonStr := string(bytes)
+		fmt.Println(jsonStr)
+	}
+
+	filePtr, err := os.Create("genesis.json")
+	if err != nil {
+		fmt.Println("Create file failed", err.Error())
+		return
+	}
+	defer filePtr.Close()
+
+	//带JSON缩进格式写文件
+	data, err := json.MarshalIndent(info, "", "  ")
+	if err != nil {
+		fmt.Println("Generate failed", err.Error())
+	} else {
+		fmt.Println("Generate success")
+	}
+	filePtr.Write(data)
 
 }
 

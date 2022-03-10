@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/rpc"
+	"log"
+	"os"
 	"time"
 )
 
@@ -37,7 +39,7 @@ func minerStopForAccount(client *rpc.Client, address string) {
 	}
 }
 
-//查询账户余额当账户全部由前后停止
+//查询账户余额
 func monitorBalance(address []string) {
 	for {
 		for i, v := range address {
@@ -50,4 +52,20 @@ func monitorBalance(address []string) {
 		}
 		time.Sleep(time.Second * 10)
 	}
+}
+
+//设置初始节点足够的钱
+func setAccountBalance(accounts []string) {
+	generateJson(accounts)
+	err := os.RemoveAll("./data0/geth")
+	if err != nil {
+		log.Fatal(err)
+	}
+	command := "geth"
+	args := []string{"init", "--datadir", "data0", "genesis.json"}
+	execCommand(command, args)
+	args = []string{"--datadir", "data0", "--nodiscover", "--networkid", "10", "--http", "--http.api", "personal,eth,net,web3,admin,miner,txpool"}
+	//execCommand(command, args)
+	fmt.Println("金额设置成功，尝试重新监听rpc端口")
+	InitRpc()
 }
