@@ -57,6 +57,22 @@ func monitorBalance(address []string) {
 //设置初始节点足够的钱
 func setAccountBalance(accounts []string) {
 	generateJson(accounts)
+	if pids != nil {
+		for pid := range pids {
+			pro, err := os.FindProcess(pid)
+			if err == nil {
+				err1 := pro.Kill()
+				if err1 != nil {
+					fmt.Println("kill failure", err)
+				} else {
+					fmt.Println("kill successful", pid)
+				}
+			} else {
+				fmt.Println("find failure", err)
+			}
+		}
+		pids = pids[0:0]
+	}
 	err := os.RemoveAll("./data0/geth")
 	if err != nil {
 		log.Fatal(err)
@@ -65,7 +81,7 @@ func setAccountBalance(accounts []string) {
 	args := []string{"init", "--datadir", "data0", "genesis.json"}
 	execCommand(command, args)
 	args = []string{"--datadir", "data0", "--nodiscover", "--networkid", "10", "--http", "--http.api", "personal,eth,net,web3,admin,miner,txpool"}
-	//execCommand(command, args)
+	execCommand(command, args)
 	fmt.Println("金额设置成功，尝试重新监听rpc端口")
 	InitRpc()
 }

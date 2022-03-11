@@ -14,5 +14,4 @@ func main() {
 	//监控账户信息
 	go monitorBalance(accounts)
 	time.Sleep(600 * time.Second)
-
 }

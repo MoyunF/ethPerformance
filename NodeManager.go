@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/pkg/errors"
-	"io"
 	"os"
 	"os/exec"
 	"strconv"
@@ -153,40 +151,46 @@ func execCommand(commandName string, params []string) bool {
 	cmd := exec.Command(commandName, params...)
 	if pids != nil {
 		for pid := range pids {
-			pro, _ := os.FindProcess(pid)
-			err := pro.Kill()
-			if err != nil {
-				fmt.Println("kill failure")
+			pro, err := os.FindProcess(pid)
+			if err == nil {
+				err1 := pro.Kill()
+				if err1 != nil {
+					fmt.Println("kill failure", err)
+				} else {
+					fmt.Println("kill successful", pid)
+				}
+			} else {
+				fmt.Println("find failure", err)
 			}
 		}
 		pids = pids[0:0]
 	}
-	pid := cmd.Process.Pid
-	fmt.Println(pid)
-	pids = append(pids, pid)
 
 	//显示运行的命令
 	fmt.Println(cmd.Args)
 
-	stdout, err := cmd.StdoutPipe()
-
-	if err != nil {
-		fmt.Println(err)
-		return false
-	}
+	//stdout, err := cmd.StdoutPipe()
+	//
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return false
+	//}
 
 	cmd.Start()
-
-	reader := bufio.NewReader(stdout)
-
-	//实时循环读取输出流中的一行内容
-	for {
-		line, err2 := reader.ReadString('\n')
-		if err2 != nil || io.EOF == err2 {
-			break
-		}
-		fmt.Println(line)
-	}
+	var pid = cmd.Process.Pid
+	fmt.Println(pid)
+	pids = append(pids, pid)
+	//
+	//reader := bufio.NewReader(stdout)
+	//
+	////实时循环读取输出流中的一行内容
+	//for {
+	//	line, err2 := reader.ReadString('\n')
+	//	if err2 != nil || io.EOF == err2 {
+	//		break
+	//	}
+	//	fmt.Println(line)
+	//}
 
 	//cmd.Wait()
 	time.Sleep(10 * time.Second)
