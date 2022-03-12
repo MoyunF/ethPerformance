@@ -4,7 +4,9 @@ go 1.17
 
 require (
 	github.com/ethereum/go-ethereum v1.10.16
+	github.com/panjf2000/ants/v2 v2.4.8
 	github.com/pkg/errors v0.9.1
+	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
 )
 
 require (
