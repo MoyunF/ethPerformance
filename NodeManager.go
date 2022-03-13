@@ -57,13 +57,13 @@ func creatNewAccount(client *rpc.Client, password string) (newAccount string, er
 	return newAccount, nil
 }
 
-//解锁账户
+//解锁账户基础操作
 func unlockAccount(client *rpc.Client, address string, passphrase string, duration int) (unlock bool, err error) {
 	err = client.Call(&unlock, "personal_unlockAccount", address, passphrase, duration)
 	if err == nil {
 		return unlock, nil
 	} else {
-		return false, errors.New("解锁账户失败")
+		return false, err
 	}
 }
 

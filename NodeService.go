@@ -54,6 +54,16 @@ func monitorBalance(address []string) {
 	}
 }
 
+//解锁全部账户
+func unlockAllAccounts(accounts []string) {
+	for _, v := range accounts {
+		_, err := unlockAccount(client, v, "123456", 300)
+		if err != nil {
+			fmt.Println("解锁失败", v, " err is", err)
+		}
+	}
+}
+
 //设置初始节点足够的钱
 func setAccountBalance(accounts []string) {
 	generateJson(accounts)
