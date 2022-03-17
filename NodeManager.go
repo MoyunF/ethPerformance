@@ -37,17 +37,6 @@ type genesis struct {
 	Alloc      Alloc  `json:"alloc"`
 }
 
-//创建网络
-func InitNet() {
-	command := "geth"
-	args := []string{"init", "--datadir", "data0", "genesis.json"}
-	execCommand(command, args)
-
-	//geth --datadir data0 --nodiscover --networkid 10 --http --http.api personal,eth,net,web3,admin,miner,txpool
-	args = []string{"--datadir", "data0", "--nodiscover", "--networkid", "10", "--http", "--http.api", "personal,eth,net,web3,admin,miner,txpool"}
-	execCommand(command, args)
-}
-
 //创建新账户
 func creatNewAccount(client *rpc.Client, password string) (newAccount string, err error) {
 	err = client.Call(&newAccount, "personal_newAccount", password)
@@ -64,18 +53,6 @@ func unlockAccount(client *rpc.Client, address string, passphrase string, durati
 		return unlock, nil
 	} else {
 		return false, err
-	}
-}
-
-func InitRpc() {
-	//获取连接与eth客户端
-	client, _ = rpc.Dial("http://localhost:8545")
-	if client == nil {
-		fmt.Println("rpc.Dial err")
-		//panic("连接错误")
-		return
-	} else {
-		fmt.Println("connect sucessuful")
 	}
 }
 
@@ -117,13 +94,13 @@ func getBalance(client *rpc.Client, account string) (Balance int64, err error) {
 func minerStart(client *rpc.Client, thread_num int) (start bool, err error) {
 	err = client.Call(&start, "miner_start", thread_num)
 	if err == nil {
-		return start, nil
+		return true, nil
 	} else {
 		return false, errors.New("挖矿启动失败")
 	}
 }
 
-//指定账户
+//指定挖矿收益账户
 func miner_setEtherbase(client *rpc.Client, address string) {
 	var result bool
 	err := client.Call(&result, "miner_setEtherbase", address)
@@ -138,9 +115,9 @@ func miner_setEtherbase(client *rpc.Client, address string) {
 func minerStop(client *rpc.Client) (stop bool, err error) {
 	err = client.Call(&stop, "miner_stop")
 	if err == nil {
-		return stop, nil
+		return false, nil
 	} else {
-		return false, errors.New("终止挖矿失败")
+		return true, errors.New("终止挖矿失败")
 	}
 }
 
@@ -233,29 +210,6 @@ func execCommand(commandName string, params []string) bool {
 //	defer client.Close()
 //
 //}
-
-//读取文件
-func readFile() {
-
-	filePtr, err := os.Open("genesis.json")
-	if err != nil {
-		fmt.Println("Open file failed [Err:%s]", err.Error())
-		return
-	}
-	defer filePtr.Close()
-
-	var info []genesis
-
-	// 创建json解码器
-	decoder := json.NewDecoder(filePtr)
-	err = decoder.Decode(&info)
-	if err != nil {
-		fmt.Println("Decoder failed", err.Error())
-	} else {
-		fmt.Println("Decoder success")
-		fmt.Println(info)
-	}
-}
 
 //修改账户余额
 func generateJson(accounts []string) {

@@ -33,7 +33,11 @@
   },
   "coinbase": "0x3333333333333333333333333333333333333333",
   "config": {
-    "chainId": 10
+    "chainId": 10,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0
   },
   "difficulty": "0xfffff",
   "extraData": "",

@@ -60,6 +60,8 @@ func unlockAllAccounts(accounts []string) {
 		_, err := unlockAccount(client, v, "123456", 300)
 		if err != nil {
 			fmt.Println("解锁失败", v, " err is", err)
+		} else {
+			fmt.Println(v, " 解锁成功")
 		}
 	}
 }
