@@ -9,7 +9,7 @@
 - `geth init --datadir data0 genesis.json   `
 - `geth --datadir data0 --nodiscover --networkid 1337 --http --http.api personal,eth,net,web3,admin,miner,txpool --allow-insecure-unlock  `
 - 运行main.go
-![img_1.png](img_1.png
+
 
 如果需要自定义账户数量：（不完善，待更新）
 
