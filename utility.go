@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ethereum/go-ethereum/rpc"
+	"time"
 )
 
 //创建网络
@@ -29,6 +30,21 @@ func InitRpc() {
 }
 
 //计算吞吐量
-func executionSummary() {
+func executionSummary(ch chan int, tx_nums int) {
+	var t1 = time.Now()
+FOR:
+	for {
+		select {
+		case tag := <-ch:
+			if tag == 0 {
+				t1 = time.Now()
+			}
+			if tag == 1 {
+				elapsed := time.Since(t1).Seconds()
 
+				fmt.Println("The elapsed time is  ", elapsed, " s......TPS is", (float64(tx_nums))/elapsed, " txs/second")
+				break FOR
+			}
+		}
+	}
 }

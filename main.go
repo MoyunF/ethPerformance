@@ -16,16 +16,13 @@ func main() {
 	//setAccountBalance(accounts)
 	//监控账户信息
 	//go monitorBalance(accounts)
-	//unlockAllAccounts(accounts)
+	unlockAllAccounts(accounts)
 	wg.Add(1)
 	go func() {
 		defer wg.Add(-1)
-		rpcPerformance(accounts, client, 100)
+		//txPool_nums:交易池中的交易数，qps：每秒向交易池发送的交易，thread_num：挖矿时使用的线程数
+		rpcPerformance(accounts, client, 10000, 10, 1)
 	}()
 	wg.Wait()
-	//交易总数/花费时间
-	//sendTxTest(client, accounts)
 
-	//go monitorTxpool(client)
-	//go minerStart(client, 1)
 }

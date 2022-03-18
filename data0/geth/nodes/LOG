@@ -31,3 +31,15 @@
 =============== Mar 18, 2022 (CST) ===============
 00:52:03.513257 db@close closing
 00:52:03.513257 db@close done T·0s
+=============== Mar 18, 2022 (CST) ===============
+09:52:57.952487 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+09:52:57.953515 version@stat F·[2] S·343B[343B] Sc·[0.50]
+09:52:57.953515 db@open opening
+09:52:57.953515 journal@recovery F·1
+09:52:57.954154 journal@recovery recovering @6
+09:52:57.955686 memdb@flush created L0@8 N·1 S·162B "loc..seq,v6":"loc..seq,v6"
+09:52:57.956768 version@stat F·[3] S·505B[505B] Sc·[0.75]
+09:52:57.961989 db@janitor F·5 G·0
+09:52:57.961989 db@open done T·8.4745ms
+11:58:55.866526 db@close closing
+11:58:55.866526 db@close done T·0s
