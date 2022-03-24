@@ -87,7 +87,7 @@ func sendTransaction(client *rpc.Client, from string, to string) (txHash string,
 }
 
 //交易池创建
-func (mx *MultiTransaction) Start(ch chan struct{}, sum chan int) {
+func (mx *MultiTransaction) Start(ch chan struct{}, sum chan int, client *rpc.Client) {
 	var wg sync.WaitGroup
 	pool, err := ants.NewPool(100)
 

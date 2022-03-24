@@ -9,7 +9,7 @@ import (
 )
 
 //创建节点
-func createAccount(account_num int) {
+func createAccount(account_num int, client *rpc.Client) {
 	for i := 0; i < account_num; i++ {
 		var password string = "123456"
 		newAccount, err := creatNewAccount(client, password)
@@ -40,7 +40,7 @@ func minerStopForAccount(client *rpc.Client, address string) {
 }
 
 //查询账户余额
-func monitorBalance(address []string) {
+func monitorBalance(address []string, client *rpc.Client) {
 	for {
 		for i, v := range address {
 			balance, err := getBalance(client, v)
@@ -55,7 +55,7 @@ func monitorBalance(address []string) {
 }
 
 //解锁全部账户
-func unlockAllAccounts(accounts []string) {
+func unlockAllAccounts(accounts []string, client *rpc.Client) {
 	for _, v := range accounts {
 		_, err := unlockAccount(client, v, "123456", 300)
 		if err != nil {

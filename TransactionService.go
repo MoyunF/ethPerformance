@@ -18,18 +18,18 @@ func rpcPerformance(accounts []string, client *rpc.Client, txPool_nums int, qps 
 	chan_sum := make(chan int, 100)
 	tx_sum := 0 //发送交易计数器
 	var wg sync.WaitGroup
-	for _, client := range clients {
+	for _, c := range clients {
 		ch := make(chan struct{})
 		chans = append(chans, ch)
 		mx := &MultiTransaction{
-			client,
+			c,
 			servers,
 			qps,
 		}
 		wg.Add(1)
 		go func() {
 			defer wg.Add(-1)
-			mx.Start(ch, chan_sum)
+			mx.Start(ch, chan_sum, client)
 		}()
 	}
 

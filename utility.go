@@ -17,15 +17,16 @@ func InitNet() {
 	execCommand(command, args)
 }
 
-func InitRpc() {
+func InitRpc() *rpc.Client {
 	//获取连接与eth客户端
-	client, _ = rpc.Dial("http://localhost:8545")
-	if client == nil {
+	client, err := rpc.Dial("http://101.201.46.135:8080")
+	if err != nil {
 		fmt.Println("rpc.Dial err")
 		//panic("连接错误")
-		return
+		return client
 	} else {
 		fmt.Println("connect sucessuful")
+		return client
 	}
 }
 

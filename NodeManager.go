@@ -11,10 +11,6 @@ import (
 	"time"
 )
 
-var (
-	client *rpc.Client
-)
-
 var pids []int
 
 type Config struct {
